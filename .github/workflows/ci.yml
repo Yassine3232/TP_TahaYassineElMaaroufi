@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '21', '25' ]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+        cache: 'maven'
+
+    - name: Rendre mvnw exécutable
+      run: chmod +x mvnw
+
+    - name: Build et tests
+      run: ./mvnw -B clean verify -Djava.version=${{ matrix.java }}
+
+    - name: Publier le jar
+    if: matrix.java == '21'
+    uses: actions/upload-artifact@v4
+    with:
+      name: application-jar
+      path: target/*.jar

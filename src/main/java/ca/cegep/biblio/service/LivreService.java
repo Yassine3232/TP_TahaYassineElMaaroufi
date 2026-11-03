@@ -11,6 +11,15 @@ import java.util.List;
 @Service
 public class LivreService {
 
+    private static final int ANNEE_MIN = 1450;
+    private static final int ANNEE_MAX = 2100;
+    private static final double TARIF_SCIENCE = 0.50;
+    private static final double TARIF_LITTERATURE = 0.25;
+    private static final double TARIF_HISTOIRE = 0.75;
+    private static final double PLAFOND_SCIENCE = 20;
+    private static final double PLAFOND_LITTERATURE = 10;
+    private static final double PLAFOND_HISTOIRE = 30;
+
     private final LivreRepository repository;
 
     public LivreService(LivreRepository repository) {
@@ -26,30 +35,30 @@ public class LivreService {
     }
 
     public Livre creer(String titre, String auteur, String isbn, int anneePublication, String categorie) {
-        if (titre == null || titre.isBlank()) {
-            throw new IllegalArgumentException("Le titre est obligatoire");
-        }
-        if (auteur == null || auteur.isBlank()) {
-            throw new IllegalArgumentException("L'auteur est obligatoire");
-        }
-        if (anneePublication < 1450 || anneePublication > 2100) {
+        valider(titre, auteur, anneePublication);
+
+        if (anneePublication < ANNEE_MIN || anneePublication > ANNEE_MAX) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
         Livre livre = new Livre(null, titre, auteur, isbn, anneePublication, categorie);
         return repository.save(livre);
     }
 
-    public Livre modifier(Long id, String titre, String auteur, String isbn, int anneePublication, String categorie) {
-        Livre livre = trouver(id);
+    private void valider(String titre, String auteur, int anneePublication) {
         if (titre == null || titre.isBlank()) {
             throw new IllegalArgumentException("Le titre est obligatoire");
         }
         if (auteur == null || auteur.isBlank()) {
             throw new IllegalArgumentException("L'auteur est obligatoire");
         }
-        if (anneePublication < 1450 || anneePublication > 2100) {
+        if (anneePublication < ANNEE_MIN || anneePublication > ANNEE_MAX) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
+    }
+
+    public Livre modifier(Long id, String titre, String auteur, String isbn, int anneePublication, String categorie) {
+        Livre livre = trouver(id);
+        valider(titre, auteur, anneePublication);
         livre.setTitre(titre);
         livre.setAuteur(auteur);
         livre.setIsbn(isbn);
@@ -83,24 +92,17 @@ public class LivreService {
 
     public double calculerFraisRetard(String categorie, int joursRetard) {
         double frais = 0;
-        if (joursRetard > 0) {
-            if (categorie.equals("JEUNESSE")) {
-                frais = joursRetard * 0.10;
-                if (frais > 5) {
-                    frais = 5;
-                }
-            } else if (categorie.equals("SCIENCE")) {
-                frais = joursRetard * 0.50;
-                if (frais > 20) {
-                    frais = 20;
-                }
-            } else {
-                frais = joursRetard * 0.25;
-                if (frais > 10) {
-                    frais = 10;
-                }
-            }
+        if(joursRetard <= 0) {
+            return frais;
         }
-        return frais;
+        return switch (categorie) {
+            case "SCIENCE" -> plafonner(joursRetard * TARIF_SCIENCE, PLAFOND_SCIENCE);
+            case "LITTERATURE" -> plafonner(joursRetard * TARIF_LITTERATURE, PLAFOND_LITTERATURE);
+            case "HISTOIRE" -> plafonner(joursRetard * TARIF_HISTOIRE, PLAFOND_HISTOIRE);
+            default -> plafonner(joursRetard * TARIF_LITTERATURE, PLAFOND_LITTERATURE);
+        };
+    }
+    private double plafonner(double montant, double plafond) {
+        return Math.min(montant, plafond);
     }
 }

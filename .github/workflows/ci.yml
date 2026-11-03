@@ -28,8 +28,15 @@ jobs:
       run: ./mvnw -B clean verify -Djava.version=${{ matrix.java }}
 
     - name: Publier le jar
-    if: matrix.java == '21'
-    uses: actions/upload-artifact@v4
-    with:
-      name: application-jar
-      path: target/*.jar
+      if: matrix.java == '21'
+      uses: actions/upload-artifact@v4
+      with:
+        name: application-jar
+        path: target/*.jar
+    
+    -name: Publier les rapports de Jacoco
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-jdk${{ matrix.java }}
+        path: target/site/jacoco

@@ -83,24 +83,17 @@ public class LivreService {
 
     public double calculerFraisRetard(String categorie, int joursRetard) {
         double frais = 0;
-        if (joursRetard > 0) {
-            if (categorie.equals("JEUNESSE")) {
-                frais = joursRetard * 0.10;
-                if (frais > 5) {
-                    frais = 5;
-                }
-            } else if (categorie.equals("SCIENCE")) {
-                frais = joursRetard * 0.50;
-                if (frais > 20) {
-                    frais = 20;
-                }
-            } else {
-                frais = joursRetard * 0.25;
-                if (frais > 10) {
-                    frais = 10;
-                }
-            }
+        if(joursRetard <= 0) {
+            return frais;
         }
-        return frais;
+        return switch (categorie) {
+            case "SCIENCE" -> plafonner(joursRetard * 0.50, 20);
+            case "LITTERATURE" -> plafonner(joursRetard * 0.25, 10);
+            case "HISTOIRE" -> plafonner(joursRetard * 0.75, 30);
+            default -> plafonner(joursRetard * 0.25, 10);
+        };
+    }
+    private double plafonner(double montant, double plafond) {
+        return Math.min(montant, plafond);
     }
 }

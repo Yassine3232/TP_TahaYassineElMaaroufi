@@ -11,6 +11,15 @@ import java.util.List;
 @Service
 public class LivreService {
 
+    private static final int ANNEE_MIN = 1450;
+    private static final int ANNEE_MAX = 2100;
+    private static final double TARIF_SCIENCE = 0.50;
+    private static final double TARIF_LITTERATURE = 0.25;
+    private static final double TARIF_HISTOIRE = 0.75;
+    private static final double PLAFOND_SCIENCE = 20;
+    private static final double PLAFOND_LITTERATURE = 10;
+    private static final double PLAFOND_HISTOIRE = 30;
+
     private final LivreRepository repository;
 
     public LivreService(LivreRepository repository) {
@@ -28,7 +37,7 @@ public class LivreService {
     public Livre creer(String titre, String auteur, String isbn, int anneePublication, String categorie) {
         valider(titre, auteur, anneePublication);
 
-        if (anneePublication < 1450 || anneePublication > 2100) {
+        if (anneePublication < ANNEE_MIN || anneePublication > ANNEE_MAX) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
         Livre livre = new Livre(null, titre, auteur, isbn, anneePublication, categorie);
@@ -42,7 +51,7 @@ public class LivreService {
         if (auteur == null || auteur.isBlank()) {
             throw new IllegalArgumentException("L'auteur est obligatoire");
         }
-        if (anneePublication < 1450 || anneePublication > 2100) {
+        if (anneePublication < ANNEE_MIN || anneePublication > ANNEE_MAX) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
     }
@@ -87,10 +96,10 @@ public class LivreService {
             return frais;
         }
         return switch (categorie) {
-            case "SCIENCE" -> plafonner(joursRetard * 0.50, 20);
-            case "LITTERATURE" -> plafonner(joursRetard * 0.25, 10);
-            case "HISTOIRE" -> plafonner(joursRetard * 0.75, 30);
-            default -> plafonner(joursRetard * 0.25, 10);
+            case "SCIENCE" -> plafonner(joursRetard * TARIF_SCIENCE, PLAFOND_SCIENCE);
+            case "LITTERATURE" -> plafonner(joursRetard * TARIF_LITTERATURE, PLAFOND_LITTERATURE);
+            case "HISTOIRE" -> plafonner(joursRetard * TARIF_HISTOIRE, PLAFOND_HISTOIRE);
+            default -> plafonner(joursRetard * TARIF_LITTERATURE, PLAFOND_LITTERATURE);
         };
     }
     private double plafonner(double montant, double plafond) {

@@ -26,12 +26,8 @@ public class LivreService {
     }
 
     public Livre creer(String titre, String auteur, String isbn, int anneePublication, String categorie) {
-        if (titre == null || titre.isBlank()) {
-            throw new IllegalArgumentException("Le titre est obligatoire");
-        }
-        if (auteur == null || auteur.isBlank()) {
-            throw new IllegalArgumentException("L'auteur est obligatoire");
-        }
+        valider(titre, auteur, anneePublication);
+
         if (anneePublication < 1450 || anneePublication > 2100) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
@@ -39,8 +35,7 @@ public class LivreService {
         return repository.save(livre);
     }
 
-    public Livre modifier(Long id, String titre, String auteur, String isbn, int anneePublication, String categorie) {
-        Livre livre = trouver(id);
+    private void valider(String titre, String auteur, int anneePublication) {
         if (titre == null || titre.isBlank()) {
             throw new IllegalArgumentException("Le titre est obligatoire");
         }
@@ -50,6 +45,11 @@ public class LivreService {
         if (anneePublication < 1450 || anneePublication > 2100) {
             throw new IllegalArgumentException("L'année de publication est invalide");
         }
+    }
+
+    public Livre modifier(Long id, String titre, String auteur, String isbn, int anneePublication, String categorie) {
+        Livre livre = trouver(id);
+        valider(titre, auteur, anneePublication);
         livre.setTitre(titre);
         livre.setAuteur(auteur);
         livre.setIsbn(isbn);

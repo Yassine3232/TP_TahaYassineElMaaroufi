@@ -140,6 +140,13 @@ Le code contient **3 à 4 code smells** du catalogue de la semaine 6.
 
 1. **Identifiez-les** : dans un tableau du `README.md`, indiquez pour chacun le nom du smell, le fichier, les
    lignes, et pourquoi c'est un problème.
+
+| Smell | Fichier | Lignes | Pourquoi ? |
+| Duplicated Code | `LivreService.java` | 29-37 et 44-52 |La logique de validation est copié dans créer et modifier, on doit répéter le code à chaque fois et aussi il y a un risque d'oubli.|
+| Long Method | `LivreService.java`  | 84-105 | Il a des `if` imbriqués (3 fois) ce qui rend la lisibilité et la compréhension plus difficile.|
+| Magic Number | `LivreService.java`  | 35,50,88-101 | il y a beaucoup de nombre qui n'ont pas de nom ce qui rend les choses plus difficiles à comprendre.|
+| Long Parameter | `LivreService.java`  | 28,42 | créer et modifier ont 5-6 paramétres ce qui rend les choses plus facile d'inverser deux arguments.|
+  
 2. **Corrigez-les** avec les réusinages de la semaine 6, **un commit par smell**.
 3. Après chaque correction, relancez `./mvnw verify` : les tests doivent rester **verts**.
    (Si vous changez la signature d'une méthode, adaptez les tests concernés dans un commit à part.)

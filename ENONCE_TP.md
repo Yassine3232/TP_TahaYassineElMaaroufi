@@ -62,9 +62,25 @@ Parcourez les packages `model`, `repository`, `service`, `controller`, `exceptio
 (2-3 lignes chacune) dans votre `README.md` :
 
 1. Quelle classe joue le rôle du **Modèle**, du **Contrôleur** ? Où se trouve la **logique métier** ?
+le Modéle est la classe "Livre" qui a les donées d'un livre, le Contrôleur est la classe "LivreController" qui recoit les requettes HTTP et renvoie cette demande au Serivce , la logique métier se trouve dans "LivreService" , ce qui applique la logique d'emprunt et la gestion de retard.
+
 2. Que fait `GestionnaireErreurs` et quel code HTTP obtient-on pour un livre introuvable ? Et pour un double emprunt ?
+Il attrape les exceptions lancees par le service et les transforme en réponse HTTP avec un message JSON.
+un livre introuvable lance LivreIntrouvableException et qui lance erreur 404.
+un double emprunt lance IllegalStateException et qui lance erreur 409.
+
 3. Où les données sont-elles stockées ? Que se passe-t-il quand l'application redémarre ?
+Les livres sont stockés en mémoire,dans un HashMap qui se trouve dans LivreRepository.
+On trouve 3 livres "hard-coded" dans le fichier LivreRepository, ce qui donne une idée sur le fait que l'application n'a pas de persistence de données.
+Donc, lors du redémarrage, tous les ajouts/modifications vont disparraitre. 
+
 4. Suivez le trajet complet d'un appel `POST /api/livres/1/emprunter` : quelles classes/méthodes sont appelées, dans quel ordre ?
+1.LivreController recoit la requete
+2.Il va appeller LivreService.emprunter(1)
+3.Le service appelle trouver(1) qui appelle LivreRepository.findById(1).Si le livre n'existe pas, l'exception va se lancer (404 LivreIntrouvableException)
+4.Si livre.isDisponible() est faux, IllegalStateException est lancée (409).
+5.Sinon,livre.setDisponible(false),puis livreRepository.save(livre).
+6.le livre se met a jour et remonte vers le controlleur pour envoyer un code 200
 
 ### A.2 Exécuter
 ```bash
@@ -78,11 +94,15 @@ Exécutez ces scénarios et notez le code HTTP obtenu ainsi que le résultat et 
 | # | Appel | Résultat attendu à vérifier |
 |---|---|---|
 | 1 | `GET /api/livres` | Liste de 3 livres |
+![alt text](image-4.png)
 | 2 | `POST /api/livres` avec un nouveau livre | Code 201, id attribué |
+![alt text](image-3.png)
 | 3 | `POST /api/livres` avec un titre vide | Code 400 |
+![alt text](image-2.png)
 | 4 | `POST /api/livres/1/emprunter` deux fois de suite | 200 puis 409 |
+![alt text](image-5.png)
 | 5 | `GET /api/livres/2/frais-retard?joursRetard=100` | Notez le montant : il vous servira pour la partie C |
-
+![alt text](image-6.png)
 Ces réponses vont dans votre `README.md` : branche `feature/lecture-code`, puis Pull Request (voir les règles de la partie 0).
 
 ---

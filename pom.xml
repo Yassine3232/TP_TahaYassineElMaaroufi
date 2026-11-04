@@ -13,7 +13,7 @@
 
     <groupId>ca.cegep</groupId>
     <artifactId>biblio-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>biblio-api</name>
     <description>API de gestion d'une petite bibliothèque (TP maintenance logicielle)</description>
 

@@ -1,4 +1,4 @@
-# biblio-api
+﻿# biblio-api
 
 API REST de gestion d'une petite bibliothèque (Spring Boot 3.5, Java 25, architecture MVC).
 
@@ -198,6 +198,7 @@ Lors du push d'un tag Git respectant SemVer (ex: `v1.0.0` ou `v1.0.1`) :
   - PR #3 (Tests unitaires & JaCoCo) : [PR #3](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/pull/3)
   - PR #4 (Code smells réusinés) : [PR #4](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/pull/4)
   - PR #5 (Docker, GHCR, Releases, CI Fix & README) : [PR #5](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/pull/5)
+  - PR #6 (Incr�mentation SemVer 1.0.1) : [PR #6](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/pull/6)
 - **Workflow CI (exécutions réussies)** : [Actions](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/actions)
 - **Page des Releases GitHub** : [Releases](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/releases)
 - **Page des Packages GHCR** : [Packages](https://github.com/Yassine3232/TP_TahaYassineElMaaroufi/pkgs/container/biblio-api)

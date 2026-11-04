@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/** Logique métier de la bibliothèque. */
 @Service
 public class LivreService {
 
@@ -36,10 +35,6 @@ public class LivreService {
 
     public Livre creer(String titre, String auteur, String isbn, int anneePublication, String categorie) {
         valider(titre, auteur, anneePublication);
-
-        if (anneePublication < ANNEE_MIN || anneePublication > ANNEE_MAX) {
-            throw new IllegalArgumentException("L'année de publication est invalide");
-        }
         Livre livre = new Livre(null, titre, auteur, isbn, anneePublication, categorie);
         return repository.save(livre);
     }
@@ -92,7 +87,7 @@ public class LivreService {
 
     public double calculerFraisRetard(String categorie, int joursRetard) {
         double frais = 0;
-        if(joursRetard <= 0) {
+        if (joursRetard <= 0) {
             return frais;
         }
         return switch (categorie) {
@@ -102,6 +97,7 @@ public class LivreService {
             default -> plafonner(joursRetard * TARIF_LITTERATURE, PLAFOND_LITTERATURE);
         };
     }
+
     private double plafonner(double montant, double plafond) {
         return Math.min(montant, plafond);
     }

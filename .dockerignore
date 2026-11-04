@@ -1,0 +1,16 @@
+# Ignorer les répertoires de version et d'outils
+.git/
+.github/
+.mvn/
+src/
+mvnw
+mvnw.cmd
+pom.xml
+README.md
+ENONCE_TP.md
+*.png
+*.md
+
+# Ignorer tout dans target SAUF les fichiers .jar
+target/*
+!target/*.jar
